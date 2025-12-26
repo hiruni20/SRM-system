@@ -33,3 +33,36 @@ export const addRequiredSkill = (req, res) => {
     res.json({ message: "Required skill added to project" });
   });
 };
+
+// Update Project
+export const updateProject = (req, res) => {
+  const { name, description, start_date, end_date, status } = req.body;
+  const sql =
+    "UPDATE projects SET name=?, description=?, start_date=?, end_date=?, status=? WHERE id=?";
+  
+  db.query(
+    sql,
+    [name, description, start_date, end_date, status, req.params.id],
+    (err, result) => {
+      if (err) return res.status(500).json(err);
+      res.json({ message: "Project updated successfully" });
+    }
+  );
+};
+
+// Delete Project
+// Delete Project
+export const deleteProject = (req, res) => {
+  const sql = "DELETE FROM projects WHERE id=?";
+
+  db.query(sql, [req.params.id], (err, result) => {
+    if (err) return res.status(500).json(err);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.json({ message: "Project deleted successfully" });
+  });
+};
+

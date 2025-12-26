@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { TextField, Button, Stack } from "@mui/material";
 import API from "../../Api/API.js";
 
-const PersonnelForm = ({ selected,setSelected, refresh }) => {
+const PersonnelForm = ({ selected, refresh }) => {
   const [data, setData] = useState({
     name: "", email: "", role: "", experience: ""
   });
@@ -15,14 +15,14 @@ const PersonnelForm = ({ selected,setSelected, refresh }) => {
     e.preventDefault();
     if (selected) {
     await API.put(`/personnel/${selected.id}`, data);
-    setSelected(null); 
+     
   } else {
     await API.post("/personnel", data);
   }
 
     refresh();
     
-  setSelected(null); 
+  
     setData({ name: "", email: "", role: "", experience: "" });
   };
  

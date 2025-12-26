@@ -1,37 +1,23 @@
-import { useEffect, useState } from "react";
-import { Container, Divider } from "@mui/material";
-import API from "./Api/API";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import PersonnelForm from "./Components/Personnel/PersonnelForm";
-import PersonnelTable from "./Components/Personnel/PersonnelTable";
-import SkillForm from "./components/skills/SkillForm";
-import SkillTable from "./components/skills/SkillTable";
+import Dashboard from "./Pages/Dashboard";
+import Home from "./Pages/Home";
+import PersonnelPage from "./Pages/PersonnelPage";
+import SkillsPage from "./Pages/SkillsPage";
+import ProjectsPage from "./Pages/ProjectsPage";
 
 const App = () => {
-  const [personnel, setPersonnel] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [editPerson, setEditPerson] = useState(null);
-  const [editSkill, setEditSkill] = useState(null);
-
-  const load = async () => {
-    setPersonnel((await API.get("/personnel")).data);
-    setSkills((await API.get("/skills")).data);
-  };
-
-  useEffect(() => { load(); }, []);
-
   return (
-    <Container>
-      <h2>Personnel Management</h2>
-      <PersonnelForm selected={editPerson} refresh={load} />
-      <PersonnelTable list={personnel} onEdit={setEditPerson} refresh={load} />
-
-      <Divider sx={{ my: 4 }} />
-
-      <h2>Skill Management</h2>
-      <SkillForm selected={editSkill} refresh={load} />
-      <SkillTable list={skills} onEdit={setEditSkill} refresh={load} />
-    </Container>
+    <Router>
+      <Dashboard>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/personnel" element={<PersonnelPage />} />
+          <Route path="/skills" element={<SkillsPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+        </Routes>
+      </Dashboard>
+    </Router>
   );
 };
 
