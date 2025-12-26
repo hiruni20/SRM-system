@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { Container, Divider } from "@mui/material";
+import API from "./Api/API";
 
-function App() {
-  const [count, setCount] = useState(0)
+import PersonnelForm from "./Components/Personnel/PersonnelForm";
+import PersonnelTable from "./Components/Personnel/PersonnelTable";
+import SkillForm from "./components/skills/SkillForm";
+import SkillTable from "./components/skills/SkillTable";
+
+const App = () => {
+  const [personnel, setPersonnel] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [editPerson, setEditPerson] = useState(null);
+  const [editSkill, setEditSkill] = useState(null);
+
+  const load = async () => {
+    setPersonnel((await API.get("/personnel")).data);
+    setSkills((await API.get("/skills")).data);
+  };
+
+  useEffect(() => { load(); }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Container>
+      <h2>Personnel Management</h2>
+      <PersonnelForm selected={editPerson} refresh={load} />
+      <PersonnelTable list={personnel} onEdit={setEditPerson} refresh={load} />
 
-export default App
+      <Divider sx={{ my: 4 }} />
+
+      <h2>Skill Management</h2>
+      <SkillForm selected={editSkill} refresh={load} />
+      <SkillTable list={skills} onEdit={setEditSkill} refresh={load} />
+    </Container>
+  );
+};
+
+export default App;
