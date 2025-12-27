@@ -50,7 +50,7 @@ export const updateProject = (req, res) => {
   );
 };
 
-// Delete Project
+
 // Delete Project
 export const deleteProject = (req, res) => {
   const sql = "DELETE FROM projects WHERE id=?";

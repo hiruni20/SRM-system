@@ -1,49 +1,85 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Typography
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useState, useEffect } from "react";
+import { Table, TableBody, TableCell, TableHead, TableRow, Button } from "@mui/material";
+import API from "../../Api/API.js";
 
-export default function AssignedSkillList({ personnelId }) {
-  const [assigned, setAssigned] = useState([]);
+const AssignedSkillList = ({ onEdit }) => {
+  const [assignedSkills, setAssignedSkills] = useState([]);
+
+  // Fetch assigned skills
+  const loadAssignedSkills = async () => {
+    try {
+      const res = await API.get("/skills/assign");
+      setAssignedSkills(res.data);
+    } catch (err) {
+      console.error("Failed to fetch assigned skills:", err);
+    }
+  };
 
   useEffect(() => {
-    if (personnelId) {
-      axios
-        .get(`/api/personnel-skills/${personnelId}`)
-        .then(res => setAssigned(res.data));
-    }
-  }, [personnelId]);
+    loadAssignedSkills();
+  }, []);
 
-  const handleDelete = async id => {
-    await axios.delete(`/api/personnel-skills/${id}`);
-    setAssigned(prev => prev.filter(s => s.id !== id));
+  // Delete assigned skill with confirmation
+  const remove = async (id) => {
+    const confirm = window.confirm("Are you sure you want to delete this assigned skill?");
+    if (!confirm) return;
+
+    try {
+      await API.delete(`/skills/assign/${id}`);
+      // Refresh list after deletion
+      loadAssignedSkills();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete assigned skill");
+    }
   };
 
   return (
-    <Paper sx={{ p: 2, mt: 3 }}>
-      <Typography variant="h6">Assigned Skills</Typography>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Personnel Name</TableCell>
+          <TableCell>Assigned Skill</TableCell>
+          <TableCell>Proficiency Level</TableCell>
+          <TableCell>Actions</TableCell>
+        </TableRow>
+      </TableHead>
 
-      <List>
-        {assigned.map(skill => (
-          <ListItem
-            key={skill.id}
-            secondaryAction={
-              <IconButton onClick={() => handleDelete(skill.id)}>
-                <DeleteIcon color="error" />
-              </IconButton>
-            }
-          >
-            <ListItemText primary={skill.skill_name} />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+      <TableBody>
+        {assignedSkills.length > 0 ? (
+          assignedSkills.map((skill) => (
+            <TableRow key={skill.id}>
+              <TableCell>{skill.personnel_name}</TableCell>
+              <TableCell>{skill.skill_name}</TableCell>
+              <TableCell>{skill.proficiency}</TableCell>
+              <TableCell>
+                <Button
+                 
+                  onClick={() => onEdit(skill)}
+                  sx={{ mr: 1 }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  
+                  color="error"
+                  onClick={() => remove(skill.id)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={4} align="center">
+              No assigned skills found
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
-}
+};
+
+export default AssignedSkillList;

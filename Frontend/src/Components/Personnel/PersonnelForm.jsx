@@ -10,18 +10,22 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
-  DialogActions
+  DialogActions,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import API from "../../Api/API.js";
 
 const PersonnelForm = ({ selected, refresh }) => {
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [data, setData] = useState({
     name: "",
     email: "",
     role: "",
-    experience: ""
+    experience: "",
   });
 
   useEffect(() => {
@@ -30,7 +34,7 @@ const PersonnelForm = ({ selected, refresh }) => {
         name: selected.name || "",
         email: selected.email || "",
         role: selected.role || "",
-        experience: selected.experience || ""
+        experience: selected.experience || "",
       });
       setOpen(true);
     }
@@ -61,13 +65,17 @@ const PersonnelForm = ({ selected, refresh }) => {
 
   return (
     <>
-      
       <Button variant="contained" onClick={handleOpen}>
         Add Personnel
       </Button>
 
-      
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        fullScreen={fullScreen}
+      >
         <DialogTitle>
           {selected ? "Update Personnel" : "Add Personnel"}
         </DialogTitle>
@@ -75,38 +83,36 @@ const PersonnelForm = ({ selected, refresh }) => {
         <DialogContent>
           <Stack spacing={2} mt={1}>
             <TextField
+              fullWidth
               label="Name"
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               required
             />
+
             <TextField
+              fullWidth
               label="Email"
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               required
             />
+
             <TextField
+              fullWidth
               label="Role"
               value={data.role}
               onChange={(e) => setData({ ...data, role: e.target.value })}
             />
-           {/*  <TextField
-              label="Experience"
-              value={data.experience}
-              onChange={(e) =>
-                setData({ ...data, experience: e.target.value })
-              }
-            /> */}
-            <FormControl fullWidth sx={{ mt: 2 }}>
+
+            <FormControl fullWidth>
               <InputLabel>Experience</InputLabel>
               <Select
-                name="Experience"
                 value={data.experience}
                 label="Experience"
-                 onChange={(e) =>
-                setData({ ...data, experience: e.target.value })
-              }
+                onChange={(e) =>
+                  setData({ ...data, experience: e.target.value })
+                }
               >
                 <MenuItem value="Junior">Junior</MenuItem>
                 <MenuItem value="Mid-Level">Mid-Level</MenuItem>
@@ -116,9 +122,22 @@ const PersonnelForm = ({ selected, refresh }) => {
           </Stack>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
+        <DialogActions
+          sx={{
+            flexDirection: fullScreen ? "column" : "row",
+            gap: 2,
+            px: 3,
+            pb: 2,
+          }}
+        >
+          <Button fullWidth={fullScreen} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            fullWidth={fullScreen}
+            variant="contained"
+            onClick={handleSubmit}
+          >
             {selected ? "Update" : "Add"}
           </Button>
         </DialogActions>
