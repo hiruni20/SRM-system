@@ -140,6 +140,7 @@ const ProjectsPage = () => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>description</TableCell>
+            <TableCell>Required Skills</TableCell>
             {/* <TableCell>Assigned Personnel</TableCell> */}
             <TableCell>Start Date</TableCell>
             <TableCell>End Date</TableCell>

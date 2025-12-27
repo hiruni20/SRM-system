@@ -1,64 +1,96 @@
 import {
-    Drawer,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Toolbar,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import {
-    Home,
-    People,
-    Build,
-    Work,
-} from "@mui/icons-material";
+import { Home, People, Build, Work } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 
 const drawerWidth = 240;
+const miniDrawerWidth = 72;
 
 const Sidebar = () => {
-    return (
-        <Drawer
-            variant="permanent"
-            sx={{
-                width: drawerWidth,
-                [`& .MuiDrawer-paper`]: {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                    bgcolor: "#1e293b",
-                    color: "#fff"//sx={{ width: 240,  height: "100vh", , p: 2 }}
-                },
-            }}
-        >
-            <Toolbar>
-                <strong>SRM System</strong>
-            </Toolbar>
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-            <List>
-                <ListItemButton component={NavLink} to="/">
-                    <ListItemIcon sx={{ color: "#fff" }}>
-                        <Home />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" sx={{ color: "#fff" }} />
-                </ListItemButton>
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: isMobile ? miniDrawerWidth : drawerWidth,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: isMobile ? miniDrawerWidth : drawerWidth,
+          boxSizing: "border-box",
+          bgcolor: "#1e293b",
+          color: "#fff",
+          overflowX: "hidden",
+        },
+      }}
+    >
+      <Toolbar sx={{ justifyContent: "center" }}>
+        {!isMobile && (
+          <Typography variant="h6" fontWeight="bold">
+            SRM System
+          </Typography>
+        )}
+      </Toolbar>
 
-                <ListItemButton component={NavLink} to="/personnel">
-                    <ListItemIcon sx={{ color: "#fff" }}><People /></ListItemIcon>
-                    <ListItemText primary="Manage Personnel" />
-                </ListItemButton>
-
-                <ListItemButton component={NavLink} to="/skills">
-                    <ListItemIcon sx={{ color: "#fff" }}><Build /></ListItemIcon>
-                    <ListItemText primary="Manage Skills" />
-                </ListItemButton>
-
-                <ListItemButton component={NavLink} to="/projects">
-                    <ListItemIcon sx={{ color: "#fff" }}><Work /></ListItemIcon>
-                    <ListItemText primary="Projects" />
-                </ListItemButton>
-            </List>
-        </Drawer>
-    );
+      <List>
+        <SidebarItem to="/" icon={<Home />} text="Home" isMobile={isMobile} />
+        <SidebarItem
+          to="/personnel"
+          icon={<People />}
+          text="Manage Personnel"
+          isMobile={isMobile}
+        />
+        <SidebarItem
+          to="/skills"
+          icon={<Build />}
+          text="Manage Skills"
+          isMobile={isMobile}
+        />
+        <SidebarItem
+          to="/projects"
+          icon={<Work />}
+          text="Projects"
+          isMobile={isMobile}
+        />
+      </List>
+    </Drawer>
+  );
 };
+
+const SidebarItem = ({ to, icon, text, isMobile }) => (
+  <ListItemButton
+    component={NavLink}
+    to={to}
+    sx={{
+      justifyContent: isMobile ? "center" : "flex-start",
+      px: isMobile ? 2 : 3,
+      "&.active": {
+        bgcolor: "#334155",
+      },
+    }}
+  >
+    <ListItemIcon
+      sx={{
+        color: "#fff",
+        minWidth: isMobile ? "auto" : 40,
+        justifyContent: "center",
+      }}
+    >
+      {icon}
+    </ListItemIcon>
+
+    {!isMobile && <ListItemText primary={text} />}
+  </ListItemButton>
+);
 
 export default Sidebar;

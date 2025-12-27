@@ -11,14 +11,14 @@ const StatCard = ({ title, value }) => (
 
 const TopStats = ({ projects, personnel, skills }) => {
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
+    <Grid container spacing={5}>
+      <Grid item s={15} md={4}>
         <StatCard title="Total Projects" value={projects} />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={15} md={4}>
         <StatCard title="Total Personnel" value={personnel} />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={15} md={4}>
         <StatCard title="Total Skills" value={skills} />
       </Grid>
     </Grid>
